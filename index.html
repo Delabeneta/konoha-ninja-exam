@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Sistema Ninja | Vila da Folha</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&family=Noto+Serif+JP:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<canvas id="canvas-bg"></canvas>
+
+<!-- SIDEBAR -->
+<nav class="sidebar" aria-label="Navegação Vila da Folha">
+  <div class="sidebar-emblem">
+    <svg viewBox="0 0 40 40" width="28" height="28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="1.5" opacity="0.6"/>
+      <path d="M20 6 C20 6 28 14 28 20 C28 26 24 30 20 34 C16 30 12 26 12 20 C12 14 20 6 20 6Z" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.8"/>
+      <path d="M14 18 Q20 10 26 18" stroke="currentColor" stroke-width="1" fill="none" opacity="0.6"/>
+      <circle cx="20" cy="22" r="3" stroke="currentColor" stroke-width="1.2" fill="none"/>
+      <line x1="20" y1="6" x2="20" y2="37" stroke="currentColor" stroke-width="0.5" opacity="0.3"/>
+      <line x1="6" y1="20" x2="34" y2="20" stroke="currentColor" stroke-width="0.5" opacity="0.3"/>
+    </svg>
+  </div>
+  <div class="sidebar-vline"></div>
+  <div class="sidebar-kanji" aria-hidden="true">木ノ葉</div>
+  <div class="sidebar-vline"></div>
+  <div class="sidebar-pip" aria-hidden="true"></div>
+</nav>
+
+<!-- AVATAR MENU -->
+<div class="avatar-menu-container" id="avatar-menu-container" style="display:none;" role="navigation" aria-label="Menu do ninja">
+  <button class="avatar-btn" id="avatar-btn" aria-label="Abrir menu" aria-haspopup="true" aria-expanded="false">
+    <span class="avatar-initials" id="avatar-initials">N</span>
+    <div class="avatar-ring" aria-hidden="true"></div>
+  </button>
+  <div class="dropdown-menu" id="dropdown-menu" role="menu">
+    <div class="dropdown-header">
+      <span class="dropdown-header-badge">忍</span>
+      <span id="dropdown-user-name">Ninja</span>
+    </div>
+    <div class="dropdown-divider"></div>
+    <button class="dropdown-item" data-action="profile" role="menuitem">
+      <span class="dropdown-item-icon">◈</span> Ficha Ninja
+    </button>
+    <button class="dropdown-item" data-action="dashboard" role="menuitem">
+      <span class="dropdown-item-icon">◉</span> Mapa de Missões
+    </button>
+    <button class="dropdown-item" data-action="ranking" role="menuitem">
+      <span class="dropdown-item-icon">◆</span> Ranking da Vila
+    </button>
+    <div class="dropdown-divider"></div>
+    <button class="dropdown-item logout" data-action="logout" role="menuitem">
+      <span class="dropdown-item-icon">◁</span> Sair da Vila
+    </button>
+  </div>
+</div>
+
+<!-- HOME SCREEN -->
+<main class="screen active" id="screen-home" aria-label="Entrada">
+  <div class="home-inner">
+    <div class="home-emblem-wrap" aria-hidden="true">
+      <div class="home-emblem">
+        <svg viewBox="0 0 120 120" width="120" height="120" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="60" cy="60" r="56" stroke="rgba(232,101,10,0.4)" stroke-width="1"/>
+          <circle cx="60" cy="60" r="48" stroke="rgba(232,101,10,0.2)" stroke-width="0.5" stroke-dasharray="4 4"/>
+          <circle cx="60" cy="60" r="40" stroke="rgba(232,101,10,0.5)" stroke-width="1.5"/>
+          <!-- Leaf symbol -->
+          <path d="M60 16 C60 16 80 36 80 56 C80 72 72 82 60 90 C48 82 40 72 40 56 C40 36 60 16 60 16Z" stroke="rgba(232,101,10,0.7)" stroke-width="1.5" fill="rgba(232,101,10,0.06)"/>
+          <path d="M46 50 Q60 32 74 50" stroke="rgba(232,101,10,0.5)" stroke-width="1" fill="none"/>
+          <circle cx="60" cy="62" r="7" stroke="rgba(232,101,10,0.8)" stroke-width="1.5" fill="rgba(232,101,10,0.1)"/>
+          <line x1="60" y1="16" x2="60" y2="90" stroke="rgba(232,101,10,0.2)" stroke-width="0.5"/>
+          <!-- Spirals at cardinal points -->
+          <circle cx="60" cy="8" r="2" fill="rgba(232,101,10,0.6)"/>
+          <circle cx="112" cy="60" r="2" fill="rgba(232,101,10,0.4)"/>
+          <circle cx="8" cy="60" r="2" fill="rgba(232,101,10,0.4)"/>
+          <circle cx="60" cy="112" r="2" fill="rgba(232,101,10,0.3)"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="home-tag" aria-hidden="true">木ノ葉隠れの里 · Konoha</div>
+    <h1 class="home-title">
+      <span class="home-title-jp" aria-hidden="true">忍者試験</span>
+      <span class="home-title-main">Exame Ninja <span class="accent">Oficial</span></span>
+    </h1>
+    <p class="home-subtitle">"O verdadeiro teste de um ninja não está nas mãos, mas na mente."<br><strong>— Iruka Umino</strong></p>
+
+    <div class="home-form" role="form" aria-label="Registro ninja">
+      <label class="home-input-label" for="ninja-name">
+        <span class="label-mark" aria-hidden="true">✦</span> Nome no registro da Vila:
+      </label>
+      <div class="home-input-wrap">
+        <input class="home-input" id="ninja-name" type="text" placeholder="Seu nome ninja" maxlength="30" autocomplete="off" aria-required="true">
+        <div class="home-input-border" aria-hidden="true"></div>
+      </div>
+      <button class="btn-start" id="btn-start">
+        <span class="btn-start-kanji" aria-hidden="true">忍</span>
+        Reivindicar Pergaminho
+        <span class="btn-start-arrow" aria-hidden="true">→</span>
+      </button>
+    </div>
+
+    <div class="home-seals" aria-label="Estatísticas do quiz">
+      <div class="home-seal-item">
+        <div class="seal-num">60</div>
+        <div class="seal-label">Jutsus</div>
+      </div>
+      <div class="home-seal-divider" aria-hidden="true">·</div>
+      <div class="home-seal-item">
+        <div class="seal-num">6</div>
+        <div class="seal-label">Ranks</div>
+      </div>
+      <div class="home-seal-divider" aria-hidden="true">·</div>
+      <div class="home-seal-item">
+        <div class="seal-num">∞</div>
+        <div class="seal-label">Treinos</div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- LOADING SCREEN -->
+<div class="screen" id="screen-loading" aria-live="polite" aria-label="Carregando">
+  <div class="loading-inner">
+    <div class="loading-seal" aria-hidden="true">
+      <svg viewBox="0 0 80 80" width="80" height="80" fill="none">
+        <circle cx="40" cy="40" r="36" stroke="rgba(232,101,10,0.3)" stroke-width="1"/>
+        <circle cx="40" cy="40" r="28" stroke="rgba(232,101,10,0.5)" stroke-width="1.5" stroke-dasharray="6 3" class="spin-slow"/>
+        <circle cx="40" cy="40" r="18" stroke="rgba(232,101,10,0.7)" stroke-width="1"/>
+        <text x="40" y="46" text-anchor="middle" fill="rgba(232,101,10,0.9)" font-size="18" font-family="Noto Serif JP">忍</text>
+      </svg>
+    </div>
+    <div class="loading-text" id="loading-text">Abrindo Registro Ninja</div>
+    <div class="loading-bar-wrap" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+      <div class="loading-bar-fill" id="loading-bar"></div>
+      <div class="loading-bar-shimmer" aria-hidden="true"></div>
+    </div>
+    <div class="loading-msg" id="loading-msg" aria-live="polite">Invocando pergaminhos secretos...</div>
+  </div>
+</div>
+
+<!-- DASHBOARD SCREEN -->
+<div class="screen" id="screen-dashboard">
+  <header class="dash-header" role="banner">
+    <div class="dash-header-left">
+      <div class="dash-header-kana" aria-hidden="true">任務地図</div>
+      <h2 class="dash-header-title">Mapa de Treinamento</h2>
+      <p class="dash-header-sub">"Um ninja deve enxergar além do que os olhos podem ver." — <strong>Kakashi</strong></p>
+    </div>
+    <div class="dash-header-scroll" aria-hidden="true">
+      <span>木ノ葉</span><span>·</span><span>任務</span><span>·</span><span>忍者</span>
+    </div>
+  </header>
+  <main class="dash-body" id="dash-body" aria-label="Missões e progresso"></main>
+</div>
+
+<!-- PROFILE SCREEN -->
+<div class="screen" id="screen-profile" aria-label="Ficha Ninja">
+  <div class="profile-container">
+    <button class="profile-back-btn" id="profile-back-btn" aria-label="Voltar ao mapa de missões">
+      <span aria-hidden="true">←</span> Voltar ao Mapa
+    </button>
+
+    <div class="profile-header">
+      <div class="profile-avatar-frame" aria-hidden="true">
+        <div class="profile-avatar-large" id="profile-avatar-large">👤</div>
+        <div class="profile-avatar-ring"></div>
+        <div class="profile-avatar-ring-outer"></div>
+      </div>
+      <h2 class="profile-name" id="profile-name">Ninja</h2>
+      <div class="profile-rank-title" id="profile-rank-title">Aluno da Academia</div>
+      <div class="profile-motto">"O caminho do ninja é feito de determinação"</div>
+    </div>
+
+    <section class="profile-section" aria-labelledby="progress-title">
+      <h3 class="section-title" id="progress-title"><span class="section-title-mark" aria-hidden="true">◈</span> Progresso Ninja </h3>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-value" id="profile-missions-done">0</div>
+          <div class="stat-label">Missões</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="profile-avg-score">0%</div>
+          <div class="stat-label">Média Global</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="profile-best-score">0</div>
+          <div class="stat-label">Melhor Score</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="profile-highest-rank">Academia</div>
+          <div class="stat-label">Rank Mais Alto</div>
+        </div>
+      </div>
+      <div class="progress-bar-container" role="progressbar" aria-label="Progresso geral">
+        <div class="progress-label">
+          <span>◉ Progresso Geral</span>
+          <span id="profile-progress-pct">0%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="profile-progress-fill" style="width:0%"></div>
+        </div>
+      </div>
+    </section>
+
+      <section class="profile-section" aria-labelledby="badges-title">
+      <h3 class="section-title" id="badges-title"><span class="section-title-mark" aria-hidden="true">◆</span> Selos de Honra</h3>
+      <div class="badges-grid" id="badges-grid" role="list"></div>
+    </section>
+  </div>
+</div>
+
+<!-- QUIZ SCREEN -->
+<div class="screen" id="screen-quiz" aria-label="Quiz em andamento">
+  <header class="quiz-topbar" role="banner">
+    <button class="quiz-back" id="quiz-back" aria-label="Abandonar missão">
+      <span aria-hidden="true">←</span> Abandonar
+    </button>
+    <div class="quiz-title" id="quiz-topbar-title" aria-live="polite">Missão</div>
+    <div class="quiz-progress-wrap" role="progressbar" aria-label="Progresso do quiz">
+      <div class="quiz-progress-track">
+        <div class="quiz-progress-fill" id="quiz-progress-fill" style="width:0%"></div>
+      </div>
+      <div class="quiz-count" id="quiz-count" aria-live="polite">0/10</div>
+    </div>
+  </header>
+  <main class="quiz-body">
+    <div class="question-card" id="question-card" role="region" aria-label="Pergunta atual">
+      <div class="q-mission-tag" id="q-label" aria-label="Técnica atual">Pergunta 1</div>
+      <p class="q-text" id="q-text" aria-live="polite"></p>
+      <div class="options-list" id="options-list" role="group" aria-label="Opções de resposta"></div>
+      <div class="btn-next-wrap">
+        <button class="btn-next" id="btn-next" aria-label="Próxima pergunta">
+          Próximo Jutsu <span aria-hidden="true">→</span>
+        </button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- RESULT SCREEN -->
+<div class="screen" id="screen-result" aria-label="Resultado da missão">
+  <div class="result-inner">
+    <div class="result-scroll-header" aria-hidden="true">
+      <div class="scroll-top-bar"></div>
+      <div class="scroll-top-knob"></div>
+    </div>
+    <div class="result-badge-wrap">
+      <div class="result-rank-badge" id="result-rank-badge" aria-hidden="true"></div>
+      <div class="result-badge-glow" aria-hidden="true"></div>
+    </div>
+    <div class="result-mission-name" id="result-mission-name" aria-label="Missão concluída">Pergaminho Lido</div>
+    <div class="result-user" id="result-user" aria-label="Nome do ninja">Ninja</div>
+    <div class="result-rank-label" aria-hidden="true"> Nova Patente Ninja</div>
+    <div class="result-rank" id="result-rank" aria-live="polite">Academia Ninja</div>
+    <div class="result-score-big" id="result-score" aria-live="polite">0/10</div>
+    <div class="result-score-sub" id="result-score-sub">acertos</div>
+    <blockquote class="result-phrase" id="result-phrase" aria-live="polite"></blockquote>
+    <div class="result-history" id="result-history" aria-label="Histórico de tentativas"></div>
+    <div class="result-btns" role="group" aria-label="Ações pós-missão">
+      <button class="btn-res btn-res-primary" id="btn-retry-mission">↺ Treinar Novamente</button>
+      <button class="btn-res btn-res-outline" id="btn-share">Compartilhar</button>
+      <button class="btn-res btn-res-secondary" id="btn-back-dash">← Painel</button>
+    </div>
+    <div class="result-scroll-footer" aria-hidden="true">
+      <div class="scroll-bottom-knob"></div>
+      <div class="scroll-bottom-bar"></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL OVERLAY -->
+<div class="modal-overlay" id="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <h2 id="modal-title" class="modal-title-text">Histórico</h2>
+      <button class="modal-close" id="modal-close" aria-label="Fechar modal">✕</button>
+    </div>
+    <div id="modal-body" class="modal-body-inner"></div>
+    <div id="modal-footer" class="modal-footer-inner"></div>
+  </div>
+</div>
+
+<!-- SHARE OVERLAY -->
+<div class="modal-overlay" id="share-overlay" role="dialog" aria-modal="true" aria-label="Compartilhar resultado">
+  <div class="modal share-modal">
+    <div class="modal-header">
+      <h2 class="modal-title-text">Pergaminho de Resultado</h2>
+      <button class="modal-close" id="share-close" aria-label="Fechar">✕</button>
+    </div>
+    <div id="share-card-wrap"></div>
+    <div style="margin-top:1rem;display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap;padding:0 1.5rem 1.5rem;">
+      <button class="btn-res btn-res-primary" id="btn-copy-share">◈ Compartilhar</button>
+      <button class="btn-res btn-res-secondary" id="share-cancel">Fechar</button>
+    </div>
+  </div>
+  </div>
+  
+
+<!-- LEVEL TRANSITION -->
+<div class="level-transition" id="level-transition" role="dialog" aria-modal="true" aria-label="Nova patente conquistada">
+  <div class="lt-inner">
+    <div class="lt-bg-seal" aria-hidden="true">忍</div>
+    <div class="lt-rank-badge" id="lt-rank-badge" aria-hidden="true"></div>
+    <div class="lt-label" aria-hidden="true">◆ O CONSELHO ANUNCIA ◆</div>
+    <div class="lt-name" id="lt-name" aria-live="assertive">Genin</div>
+    <div class="lt-sub" id="lt-sub">Sua testa levará este símbolo com honra eterna</div>
+    <div class="lt-divider" aria-hidden="true"></div>
+    <button class="btn-res btn-res-primary lt-btn" id="lt-continue">Aceitar Patente →</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
