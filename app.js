@@ -1,44 +1,40 @@
-/* ═══════════════════════════════════════════════════════════════
-   NARUTO QUIZ — app.js v4 (com Perfil e Menu)
-═══════════════════════════════════════════════════════════════ */
-
-/* ── DADOS ── */
 const STORAGE_KEY = 'naruto_quiz_v4';
 const OLD_KEY     = 'naruto_quiz_v3';
 
 const RANK_ORDER = ['academia','genin','chunin','jounin','anbu','hokage'];
 
 const RANKS = {
-  academia:{ rank:'Aluno da Academia', icon:'', badge:'📜', phrase:'Seu chakra acabou de despertar...' },
-  genin:   { rank:'Genin',            icon:'', badge:'🎭', phrase:'Você já pode sair em missões supervisionadas.' },
-  chunin:  { rank:'Chunin',           icon:'', badge:'⚔️', phrase:'Seu conhecimento inspira respeito.' },
-  jounin:  { rank:'Jounin',           icon:'', badge:'🟢', phrase:'Kakashi aprovaria seu desempenho.' },
-  anbu:    { rank:'ANBU',             icon:'', badge:'🎴', phrase:'Você opera nas sombras da Vila.' },
-  hokage:  { rank:'Hokage',           icon:'', badge:'👑', phrase:'A Vila da Folha reconhece sua sabedoria.' },
+  academia:{ rank:'Aluno da Academia', icon:'', badge:'📜', phrase:'Seu chakra acabou de despertar. O caminho é longo, mas começa aqui.' },
+  genin:   { rank:'Genin',            icon:'', badge:'🎭', phrase:'Você está apto para missões de baixo risco. Siga seu sensei.' },
+  chunin:  { rank:'Chunin',           icon:'', badge:'⚔️', phrase:'Seu julgamento em campo foi reconhecido pelo Conselho.' },
+  jounin:  { rank:'Jounin',           icon:'', badge:'🟢', phrase:'Poucos chegam aqui. Sua maestria é inegável.' },
+  anbu:    { rank:'ANBU',             icon:'', badge:'🎴', phrase:'Você opera onde a luz não alcança. Não revele sua identidade.' },
+  hokage:  { rank:'Hokage',           icon:'', badge:'👑', phrase:'A Vila da Folha tem um novo guardião. Que seu nome perdure.' },
 };
 
 const BADGES_DEF = [
   { id:'first_mission', icon:'🎌', label:'Primeira Missão', desc:'Complete qualquer missão' },
-  { id:'all_missions',  icon:'📜', label:'Todas as Missões', desc:'Complete as 6 missões' },
-  { id:'perfect',       icon:'⭐', label:'Nota Perfeita', desc:'10/10 em qualquer missão' },
-  { id:'hokage_rank',   icon:'👑', label:'Hokage Supremo', desc:'Rank Hokage em qualquer missão' },
-  { id:'anbu_ops',      icon:'🎴', label:'Operativo ANBU', desc:'Rank ANBU na Missão 5' },
-  { id:'master',        icon:'🌀', label:'Mestre Ninja', desc:'Domine todas as missões' },
-  { id:'genin_promo',   icon:'🎭', label:'Genin Promovido', desc:'Alcance o rank Genin' },
+  { id:'all_missions',  icon:'📜', label:'Pergaminho Completo', desc:'Complete as 6 missões' },
+  { id:'perfect',       icon:'⭐', label:'Pontuação Perfeita', desc:'Faça 10/10 em qualquer missão' },
+  { id:'hokage_rank',   icon:'👑', label:'Hokage Supremo', desc:'Obtenha rank Hokage' },
+  { id:'anbu_ops',      icon:'🎭', label:'Operativo ANBU', desc:'Conquiste Rank ANBU na Missão 5' },
+  { id:'master',        icon:'🌀', label:'Sábio dos Seis Caminhos', desc:'Domine todas as missões' },
+  { id:'genin_promo',   icon:'🥷', label:'Genin Promovido', desc:'Alcance o rank Genin' },
   { id:'chunin_elite',  icon:'⚔️', label:'Chunin Elite', desc:'Alcance o rank Chunin' },
-  { id:'anbu_unlocked', icon:'🎴', label:'ANBU Desbloqueado', desc:'Alcance o rank ANBU' },
-  { id:'hokage_reached',icon:'👑', label:'Hokage Alcançado', desc:'Alcance o rank Hokage' },
+  { id:'anbu_unlocked', icon:'🎴', label:'Máscara ANBU', desc:'Desloqueie o rank ANBU' },
+  { id:'hokage_reached',icon:'👑', label:'Vontade de Fogo', desc:'Alcance o rank Hokage' },
   { id:'ten_attempts',  icon:'🔟', label:'10 Tentativas', desc:'Realize 10 tentativas em missões' },
   { id:'rasengan_master',icon:'🌀', label:'Mestre do Rasengan', desc:'Acumule 100 acertos' },
 ];
 
+
 const MISSIONS = [
-  { id:'academia', num:1, name:'Academia Ninja', title:'Academia Ninja', desc:'Primeiros passos.', icon:'', color:'#4A90D9', questions:[0,1,2,3,4,5,6,7,8,9] },
-  { id:'genin',    num:2, name:'Exame Genin',    title:'Exame Genin',    desc:'Mostre seu valor.', icon:'', color:'#27AE60', questions:[10,11,12,13,14,15,16,17,18,19] },
-  { id:'chunin',   num:3, name:'Exame Chunin',   title:'Exame Chunin',   desc:'Nível sobe.', icon:'', color:'#E8650A', questions:[20,21,22,23,24,25,26,27,28,29] },
-  { id:'jounin',   num:4, name:'Operação Jounin',title:'Operação Jounin',desc:'Experientes.', icon:'', color:'#8E44AD', questions:[30,31,32,33,34,35,36,37,38,39] },
-  { id:'anbu',     num:5, name:'Arquivos ANBU',  title:'Arquivos ANBU',  desc:'Conhecimento oculto.', icon:'', color:'#C0392B', questions:[40,41,42,43,44,45,46,47,48,49] },
-  { id:'hokage',   num:6, name:'Prova Hokage',   title:'Prova Hokage',   desc:'Teste definitivo.', icon:'', color:'#F5A623', questions:[50,51,52,53,54,55,56,57,58,59] },
+  { id:'academia', num:1, name:'Academia Ninja', title:'Academia Ninja',   desc:'Primeiros passos.', icon:'忍', color:'#4A90D9', questions:[0,1,2,3,4,5,6,7,8,9] },
+  { id:'genin',    num:2, name:'Exame Genin',    title:'Exame Genin',      desc:'Mostre seu valor.', icon:'葉', color:'#27AE60', questions:[10,11,12,13,14,15,16,17,18,19] },
+  { id:'chunin',   num:3, name:'Exame Chunin',   title:'Exame Chunin',     desc:'Nível sobe.',       icon:'⚔', color:'#E8650A', questions:[20,21,22,23,24,25,26,27,28,29] },
+  { id:'jounin',   num:4, name:'Operação Jounin',title:'Operação Jounin',  desc:'Experientes.',      icon:'雷', color:'#8E44AD', questions:[30,31,32,33,34,35,36,37,38,39] },
+  { id:'anbu',     num:5, name:'Arquivos ANBU',  title:'Arquivos ANBU',    desc:'Conhecimento oculto.', icon:'暗', color:'#C0392B', questions:[40,41,42,43,44,45,46,47,48,49] },
+  { id:'hokage',   num:6, name:'Prova Hokage',   title:'Prova Hokage',     desc:'Teste definitivo.', icon:'火', color:'#F5A623', questions:[50,51,52,53,54,55,56,57,58,59] },
 ];
 
 const QUESTIONS_ACADEMIA = [
@@ -147,6 +143,7 @@ const state = {
   missionQuestions: [],
   prevOverallRankKey: null,
   isLoggedIn: false,
+  _modalOpener: null, 
 };
 
 /* ═══════════════════════════════════════════════════════════════
@@ -209,14 +206,14 @@ function getTotalCorrectAnswers() {
   return total;
 }
 
-/* ── HELPERS ── */
+
 function getRankKey(score) {
   const p = score / 10;
-  if (p < 0.4) return 'academia';
-  if (p < 0.6) return 'genin';
-  if (p < 0.7) return 'chunin';
-  if (p < 0.8) return 'jounin';
-  if (p < 1.0) return 'anbu';
+  if (p <= 0.20) return 'academia';
+  if (p <= 0.40) return 'genin';
+  if (p <= 0.60) return 'chunin';
+  if (p <= 0.75) return 'jounin';
+  if (p <= 0.87) return 'anbu';
   return 'hokage';
 }
 
@@ -272,7 +269,7 @@ function getUnlockedBadges() {
   let done = 0, hasPerfect = false, hasHokage = false, hasAnbu = false, allMaster = true;
   let totalAttempts = 0;
   let totalCorrect = 0;
-  
+
   MISSIONS.forEach(m => {
     const d = s[m.id];
     if (!d || d.attempts === 0) { allMaster = false; return; }
@@ -285,22 +282,22 @@ function getUnlockedBadges() {
     if (d.bestScore !== 10) allMaster = false;
     if (d.history) d.history.forEach(h => totalCorrect += h.score);
   });
-  
+
   if (done >= 1) unlocked.add('first_mission');
   if (done >= 6) unlocked.add('all_missions');
   if (hasPerfect) unlocked.add('perfect');
   if (hasHokage) unlocked.add('hokage_rank');
   if (hasAnbu) unlocked.add('anbu_ops');
-  if (allMaster) unlocked.add('master');
-  
+  if (allMaster && done === 6) unlocked.add('master');
+
   const highestRank = getHighestRankKey();
-  if (highestRank === 'genin' || highestRank === 'chunin' || highestRank === 'jounin' || highestRank === 'anbu' || highestRank === 'hokage') unlocked.add('genin_promo');
-  if (highestRank === 'chunin' || highestRank === 'jounin' || highestRank === 'anbu' || highestRank === 'hokage') unlocked.add('chunin_elite');
-  if (highestRank === 'anbu' || highestRank === 'hokage') unlocked.add('anbu_unlocked');
+  if (['genin','chunin','jounin','anbu','hokage'].includes(highestRank)) unlocked.add('genin_promo');
+  if (['chunin','jounin','anbu','hokage'].includes(highestRank)) unlocked.add('chunin_elite');
+  if (['anbu','hokage'].includes(highestRank)) unlocked.add('anbu_unlocked');
   if (highestRank === 'hokage') unlocked.add('hokage_reached');
   if (totalAttempts >= 10) unlocked.add('ten_attempts');
   if (totalCorrect >= 100) unlocked.add('rasengan_master');
-  
+
   return unlocked;
 }
 
@@ -312,11 +309,7 @@ function shuffleOptions(question) {
   }
   const newCorrectIndex = indices.indexOf(question.a);
   const shuffledOptions = indices.map(i => question.o[i]);
-  return {
-    q: question.q,
-    o: shuffledOptions,
-    a: newCorrectIndex
-  };
+  return { q: question.q, o: shuffledOptions, a: newCorrectIndex };
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -324,6 +317,7 @@ function shuffleOptions(question) {
 ═══════════════════════════════════════════════════════════════ */
 (function initCanvas() {
   const c = document.getElementById('canvas-bg');
+  if (!c) return;
   const ctx = c.getContext('2d');
   let W, H, particles = [];
 
@@ -361,11 +355,11 @@ function shuffleOptions(question) {
     }
   }
 
-  for (let i = 0; i < 50; i++) particles.push(new P());
+  for (let i = 0; i < 35; i++) particles.push(new P());
 
   function loop() {
     ctx.clearRect(0, 0, W, H);
-    ctx.strokeStyle = 'rgba(232,101,10,0.025)'; ctx.lineWidth = 1;
+    ctx.strokeStyle = 'rgba(232,101,10,0.02)'; ctx.lineWidth = 1;
     for (let x = 0; x < W; x += 80) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); }
     for (let y = 0; y < H; y += 80) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
     particles.forEach(p => { p.update(); p.draw(); });
@@ -391,15 +385,63 @@ function showToast(msg, type = 'ok', ms = 2600) {
   toastTimer = setTimeout(() => t.classList.remove('show'), ms);
 }
 
-function openModal(title, bodyHTML, footerHTML = '') {
+/* ── MODAL COM TRAP DE FOCO ── */
+
+// Elementos focáveis dentro de um container
+function getFocusable(container) {
+  return Array.from(container.querySelectorAll(
+    'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+  )).filter(el => !el.closest('[hidden]') && el.offsetParent !== null);
+}
+
+function trapFocus(e, container) {
+  const focusable = getFocusable(container);
+  if (!focusable.length) return;
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+  if (e.key === 'Tab') {
+    if (e.shiftKey) {
+      if (document.activeElement === first) { e.preventDefault(); last.focus(); }
+    } else {
+      if (document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
+  }
+}
+
+let _trapHandler = null;
+
+function openModal(title, bodyHTML, footerHTML = '', openerEl = null) {
+  state._modalOpener = openerEl || document.activeElement;
+
   document.getElementById('modal-title').textContent = title;
   document.getElementById('modal-body').innerHTML = bodyHTML;
   document.getElementById('modal-footer').innerHTML = footerHTML;
-  document.getElementById('modal-overlay').classList.add('open');
+
+  const overlay = document.getElementById('modal-overlay');
+  overlay.classList.add('open');
+
+  const modal = document.getElementById('modal');
+  requestAnimationFrame(() => {
+    const focusable = getFocusable(modal);
+    if (focusable.length) focusable[0].focus();
+  });
+
+  if (_trapHandler) modal.removeEventListener('keydown', _trapHandler);
+  _trapHandler = (e) => trapFocus(e, modal);
+  modal.addEventListener('keydown', _trapHandler);
 }
 
 function closeModal() {
-  document.getElementById('modal-overlay').classList.remove('open');
+  const overlay = document.getElementById('modal-overlay');
+  overlay.classList.remove('open');
+
+  if (state._modalOpener && typeof state._modalOpener.focus === 'function') {
+    state._modalOpener.focus();
+  }
+  state._modalOpener = null;
+
+  const modal = document.getElementById('modal');
+  if (_trapHandler) { modal.removeEventListener('keydown', _trapHandler); _trapHandler = null; }
 }
 
 document.getElementById('modal-close').onclick = closeModal;
@@ -465,13 +507,18 @@ function hideAvatarMenu() {
 }
 
 function toggleDropdown() {
+  const btn = document.getElementById('avatar-btn');
   const dropdown = document.getElementById('dropdown-menu');
-  dropdown.classList.toggle('open');
+  const isOpen = dropdown.classList.toggle('open');
+
+  btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
 }
 
 function closeDropdown() {
+  const btn = document.getElementById('avatar-btn');
   const dropdown = document.getElementById('dropdown-menu');
   dropdown.classList.remove('open');
+  btn.setAttribute('aria-expanded', 'false');
 }
 
 function showDashboard() {
@@ -488,30 +535,36 @@ function showProfile() {
 
 function showRankingGlobal() {
   closeDropdown();
-  showToast('🏆 Ranking Global em desenvolvimento...', 'info');
+  showToast('Ranking Global em desenvolvimento...', 'info');
 }
 
 function showSettings() {
   closeDropdown();
-  showToast('⚙️ Configurações em desenvolvimento...', 'info');
+  showToast('Configurações em desenvolvimento...', 'info');
 }
 
 function logoutUser() {
+  const logoutBtn = document.querySelector('[data-action="logout"]');
   closeDropdown();
   openModal(
     '⚠️ Sair da Conta Ninja? ⚠️',
     '<p class="modal-confirm-text">Deseja realmente sair da sua conta? Seu progresso será mantido, mas você precisará fazer login novamente.</p>',
-    `<button class="btn-res btn-res-danger" id="confirm-logout">🚪 Sair</button>
-     <button class="btn-res btn-res-secondary" onclick="closeModal()">Cancelar</button>`
+    `<button class="btn-res btn-res-danger" id="confirm-logout"> Sair</button>
+     <button class="btn-res btn-res-secondary" onclick="closeModal()">Cancelar</button>`,
+    logoutBtn
   );
   document.getElementById('confirm-logout').onclick = () => {
     state.userName = '';
     state.isLoggedIn = false;
     state.currentMission = null;
+  
     hideAvatarMenu();
     closeModal();
     showScreen('home');
+  
     document.getElementById('ninja-name').value = '';
+    document.getElementById('ninja-name').focus();
+
     showToast('Você saiu da sua conta. Até a próxima, shinobi! 🍃', 'info');
   };
 }
@@ -519,22 +572,13 @@ function logoutUser() {
 /* ═══════════════════════════════════════════════════════════════
    HOME
 ═══════════════════════════════════════════════════════════════ */
-(function initHome() {
-  const saved = getSavedName();
-  if (saved) {
-    state.userName = saved;
-    state.isLoggedIn = true;
-    updateAvatar();
-    showAvatarMenu();
-    startLoading('dashboard');
-    return;
-  }
+ (function initHome() {
 
   document.getElementById('btn-start').onclick = () => {
     const name = document.getElementById('ninja-name').value.trim();
     if (!name) {
       document.getElementById('ninja-name').focus();
-      showToast('Digite seu nome ninja! 🍃', 'error');
+      showToast('Digite seu nome ninja!', 'error');
       return;
     }
     state.userName = name;
@@ -549,6 +593,9 @@ function logoutUser() {
   document.getElementById('ninja-name').addEventListener('keydown', e => {
     if (e.key === 'Enter') document.getElementById('btn-start').click();
   });
+
+   
+  
 })();
 
 /* ═══════════════════════════════════════════════════════════════
@@ -584,20 +631,20 @@ function renderDashboard() {
   const overallRankKey = getOverallRankKey();
   const overallRank = RANKS[overallRankKey];
   const stats = getOverallStats();
-  const badges = getUnlockedBadges();
 
   const rankBar = `
   <div class="rank-bar">
     <div class="rank-bar-left">
-      <div class="rank-bar-badge">${overallRank.badge}</div>
+      <div class="rank-bar-badge" aria-hidden="true">${overallRank.badge}</div>
       <div class="rank-bar-info">
-        <div class="rank-bar-title"> ${state.userName}</div>
+        <div class="rank-bar-title">${state.userName}</div>
+        <div class="rank-bar-rank">${overallRank.rank} · Konoha</div>
         <div class="rank-bar-progress-wrap">
           <div class="rank-bar-progress-label">
-            <span> Progresso Ninja:  </span>
-            <span>  ${stats.progress}%</span>
+            <span>Progresso Ninja</span>
+            <span>${stats.progress}%</span>
           </div>
-          <div class="rank-bar-progress-track">
+          <div class="rank-bar-progress-track" role="progressbar" aria-valuenow="${stats.progress}" aria-valuemin="0" aria-valuemax="100" aria-label="Progresso geral">
             <div class="rank-bar-progress-fill" style="width:${stats.progress}%"></div>
           </div>
         </div>
@@ -614,15 +661,6 @@ function renderDashboard() {
       </div>
     </div>
   </div>`;
-
-  /* const badgesHTML = `
-    <div class="section-label"> Selos de Honra ao Mérito</div>
-    <div class="badges-row">
-      ${BADGES_DEF.slice(0,6).map(b => `
-        <div class="badge ${badges.has(b.id) ? 'badge-unlocked' : 'badge-locked'}" title="${b.desc}">
-          ${b.icon} ${b.label}
-        </div>`).join('')}
-    </div>`; */
 
   const missionsHTML = `
     <div class="section-label">Pergaminhos de Rankeamento</div>
@@ -644,18 +682,21 @@ function renderDashboard() {
     card.onclick = handler;
 
     const histBtn = card.querySelector('.mission-hist-btn');
-    if (histBtn) histBtn.onclick = e => { e.stopPropagation(); openHistoryModal(m); };
+    if (histBtn) histBtn.onclick = e => {
+      e.stopPropagation();
+      openHistoryModal(m, histBtn);
+    };
   });
 }
 
 function getMissionQuote(missionId) {
   const quotes = {
     'academia': 'As folhas dançam, mas a árvore permanece.',
-    'genin': 'Um verdadeiro ninja nunca desiste!',
-    'chunin': 'Hehe... você tem potencial.',
-    'jounin': 'O importante não é ser o melhor, mas dar o seu melhor.',
-    'anbu': 'Nas sombras, protegemos a luz.',
-    'hokage': 'Aquele que suporta e protege a todos.'
+    'genin':    'Um verdadeiro ninja nunca desiste!',
+    'chunin':   'Hehe... você tem potencial.',
+    'jounin':   'O importante não é ser o melhor, mas dar o seu melhor.',
+    'anbu':     'Nas sombras, protegemos a luz.',
+    'hokage':   'Aquele que suporta e protege a todos.'
   };
   return quotes[missionId] || 'O caminho do ninja é árduo.';
 }
@@ -663,11 +704,11 @@ function getMissionQuote(missionId) {
 function getRecommendedRank(missionId) {
   const ranks = {
     'academia': 'Academia',
-    'genin': 'Genin',
-    'chunin': 'Chunin',
-    'jounin': 'Jounin',
-    'anbu': 'ANBU',
-    'hokage': 'Hokage'
+    'genin':    'Genin',
+    'chunin':   'Chunin',
+    'jounin':   'Jounin',
+    'anbu':     'ANBU',
+    'hokage':   'Hokage'
   };
   return ranks[missionId] || '—';
 }
@@ -685,29 +726,29 @@ function buildMissionCard(m, idx) {
   const master = done && md.bestScore === 10;
 
   const statusClass = !unlocked ? 'status-locked' : master ? 'status-master' : done ? 'status-done' : 'status-new';
-  const statusLabel = !unlocked ? ' Trancada' : master ? ' Completa' : done ? ' Feita' : ' Disponível';
+  const statusLabel = !unlocked ? 'Trancada' : master ? 'Completa' : done ? 'Feita' : 'Disponível';
 
   return `
-    <div class="mission-card${!unlocked ? ' locked' : ''}" data-id="${m.id}" style="--mission-color:${m.color}">
+    <div class="mission-card${!unlocked ? ' locked' : ''}" data-id="${m.id}" style="--mission-color:${m.color}" ${unlocked ? 'role="button" tabindex="0"' : 'aria-disabled="true"'} aria-label="${m.title}${done ? ', completada' : !unlocked ? ', bloqueada' : ''}">
       <div class="mission-top">
-        <span class="mission-icon">${m.icon}</span>
+        <span class="mission-icon" aria-hidden="true" style="font-family:'Noto Serif JP',serif;font-size:1.6rem;color:${m.color};opacity:0.9;">${m.icon}</span>
         <span class="mission-status ${statusClass}">${statusLabel}</span>
       </div>
       <div class="mission-title-main">${m.title}</div>
-      <div class="mission-quote">“${getMissionQuote(m.id)}”</div>
+      <div class="mission-quote">"${getMissionQuote(m.id)}"</div>
       <div class="mission-meta-single">
-        <span>🎯 ${getRecommendedRank(m.id)}</span>
-        <span>🏮 ${md.attempts || 0}</span>
-        ${md.bestScore !== null ? `<span>🌀 ${getVisualProgress(md.bestScore)}</span>` : '<span>🌀 ◻️◻️◻️◻️◻️</span>'}
+        <span>◈ ${getRecommendedRank(m.id)}</span>
+        <span>巻 ${md.attempts || 0} tentativa${md.attempts !== 1 ? 's' : ''}</span>
+        ${md.bestScore !== null ? `<span aria-label="Progresso: ${md.bestScore} de 10">🌀 ${getVisualProgress(md.bestScore)}</span>` : '<span aria-label="Sem progresso">🌀 ◻️◻️◻️◻️◻️</span>'}
       </div>
-      <button class="mission-btn" ${!unlocked ? 'disabled' : ''}>
-        ${!unlocked ? 'Selo Proibido' : done ? 'Treinar Novamente' : 'Aceitar Pergaminho'}
+      <button class="mission-btn" ${!unlocked ? 'disabled aria-disabled="true"' : ''}>
+        ${!unlocked ? '🔒 Selo Proibido' : done ? '↺ Treinar Novamente' : '📜 Aceitar Pergaminho'}
       </button>
-      ${done ? `<button class="mission-hist-btn" onclick="event.stopPropagation(); openHistoryModal(${JSON.stringify(m)})">📜 Ver Tentativas</button>` : ''}
+      ${done ? `<button class="mission-hist-btn">巻  Ver Tentativas</button>` : ''}
     </div>`;
 }
 
-function openHistoryModal(m) {
+function openHistoryModal(m, openerEl) {
   const md = getMissionData(m.id);
   if (!md.history.length) { showToast('Nenhum treino registrado.', 'info'); return; }
 
@@ -719,8 +760,16 @@ function openHistoryModal(m) {
     </div>`).join('');
 
   const footer = `<button class="btn-res btn-res-secondary" onclick="closeModal()">Fechar</button>`;
-  openModal(`${m.icon} ${m.title} — Histórico`, rows, footer);
+  openModal(`${m.icon} ${m.title} — Histórico`, rows, footer, openerEl);
 }
+
+/* Suporte a teclado nas mission cards (Enter/Space) */
+document.addEventListener('keydown', e => {
+  if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('.mission-card[role="button"]')) {
+    e.preventDefault();
+    e.target.click();
+  }
+});
 
 /* ═══════════════════════════════════════════════════════════════
    PROFILE
@@ -732,44 +781,42 @@ function renderProfile() {
   const badges = getUnlockedBadges();
   const highestRankKey = getHighestRankKey();
   const highestRank = RANKS[highestRankKey];
-  const totalMissions = stats.done;
-  const avgScore = stats.avg;
   const bestOverallScore = Math.max(...MISSIONS.map(m => getMissionData(m.id).bestScore || 0));
   const progressPct = stats.progress;
 
   document.getElementById('profile-name').textContent = state.userName;
   document.getElementById('profile-rank-title').innerHTML = `${highestRank.badge} ${highestRank.rank} de Konoha`;
   document.getElementById('profile-avatar-large').textContent = overallRank.badge;
-  document.getElementById('profile-missions-done').textContent = `${totalMissions}/6`;
-  document.getElementById('profile-avg-score').textContent = `${avgScore}%`;
+  document.getElementById('profile-missions-done').textContent = `${stats.done}/6`;
+  document.getElementById('profile-avg-score').textContent = `${stats.avg}%`;
   document.getElementById('profile-best-score').textContent = bestOverallScore;
   document.getElementById('profile-highest-rank').textContent = highestRank.rank;
   document.getElementById('profile-progress-pct').textContent = `${progressPct}%`;
   document.getElementById('profile-progress-fill').style.width = `${progressPct}%`;
 
   const allBadges = [
-    { id:'first_mission', icon:'🎌', label:'Primeira Missão', desc:'Complete qualquer missão' },
-    { id:'all_missions', icon:'📜', label:'Todas as Missões', desc:'Complete as 6 missões' },
-    { id:'perfect', icon:'⭐', label:'Nota Perfeita', desc:'10/10 em qualquer missão' },
-    { id:'hokage_rank', icon:'👑', label:'Hokage Supremo', desc:'Rank Hokage' },
-    { id:'anbu_ops', icon:'🎴', label:'Operativo ANBU', desc:'Rank ANBU na Missão 5' },
-    { id:'master', icon:'🌀', label:'Mestre Ninja', desc:'Domine todas as missões' },
-    { id:'genin_promo', icon:'🎭', label:'Genin Promovido', desc:'Alcance o rank Genin' },
-    { id:'chunin_elite', icon:'⚔️', label:'Chunin Elite', desc:'Alcance o rank Chunin' },
-    { id:'anbu_unlocked', icon:'🎴', label:'ANBU Desbloqueado', desc:'Alcance o rank ANBU' },
-    { id:'hokage_reached', icon:'👑', label:'Hokage Alcançado', desc:'Alcance o rank Hokage' },
-    { id:'ten_attempts', icon:'🔟', label:'10 Tentativas', desc:'Realize 10 tentativas' },
-    { id:'rasengan_master', icon:'🌀', label:'Mestre do Rasengan', desc:'Acumule 100 acertos' },
+    { id:'first_mission',  icon:'🎌', label:'Primeira Missão',    desc:'Complete qualquer missão' },
+    { id:'all_missions',   icon:'📜', label:'Todas as Missões',   desc:'Complete as 6 missões' },
+    { id:'perfect',        icon:'⭐', label:'Nota Perfeita',      desc:'10/10 em qualquer missão' },
+    { id:'hokage_rank',    icon:'👑', label:'Hokage Supremo',     desc:'Rank Hokage em qualquer missão' },
+    { id:'anbu_ops',       icon:'🎴', label:'Operativo ANBU',     desc:'Rank ANBU na Missão 5' },
+    { id:'master',         icon:'🌀', label:'Mestre Ninja',       desc:'Domine todas as missões' },
+    { id:'genin_promo',    icon:'🎭', label:'Genin Promovido',    desc:'Alcance o rank Genin' },
+    { id:'chunin_elite',   icon:'⚔️', label:'Chunin Elite',       desc:'Alcance o rank Chunin' },
+    { id:'anbu_unlocked',  icon:'🎴', label:'ANBU Desbloqueado',  desc:'Alcance o rank ANBU' },
+    { id:'hokage_reached', icon:'👑', label:'Hokage Alcançado',   desc:'Alcance o rank Hokage' },
+    { id:'ten_attempts',   icon:'🔟', label:'10 Tentativas',      desc:'Realize 10 tentativas' },
+    { id:'rasengan_master',icon:'🌀', label:'Mestre do Rasengan', desc:'Acumule 100 acertos' },
   ];
 
   const badgesHTML = allBadges.map(b => `
-    <div class="profile-badge ${badges.has(b.id) ? 'unlocked' : 'locked'}">
-      <div class="profile-badge-icon">${b.icon}</div>
+    <div class="profile-badge ${badges.has(b.id) ? 'unlocked' : 'locked'}" role="listitem" aria-label="${b.label}: ${badges.has(b.id) ? 'desbloqueado' : 'bloqueado'}">
+      <div class="profile-badge-icon" aria-hidden="true">${b.icon}</div>
       <div class="profile-badge-info">
         <div class="profile-badge-name">${b.label}</div>
         <div class="profile-badge-desc">${b.desc}</div>
       </div>
-      ${!badges.has(b.id) ? '<div class="profile-badge-lock">🔒</div>' : '<div class="profile-badge-lock">✅</div>'}
+      <div class="profile-badge-lock" aria-hidden="true">${!badges.has(b.id) ? '🔒' : '✅'}</div>
     </div>
   `).join('');
 
@@ -808,11 +855,17 @@ function renderQuestion() {
   document.getElementById('q-text').textContent = q.q;
 
   const list = document.getElementById('options-list');
+  list.setAttribute('role', 'radiogroup');
+  list.setAttribute('aria-label', 'Opções de resposta');
   list.innerHTML = '';
+
   ['A', 'B', 'C', 'D'].forEach((letter, i) => {
     const btn = document.createElement('button');
     btn.className = 'opt';
-    btn.innerHTML = `<span class="opt-letter">${letter}</span><span>${q.o[i]}</span>`;
+    btn.setAttribute('role', 'radio');
+    btn.setAttribute('aria-checked', 'false');
+    btn.setAttribute('aria-label', `Opção ${letter}: ${q.o[i]}`);
+    btn.innerHTML = `<span class="opt-letter" aria-hidden="true">${letter}</span><span>${q.o[i]}</span>`;
     btn.onclick = () => selectOption(btn, i);
     list.appendChild(btn);
   });
@@ -824,6 +877,12 @@ function renderQuestion() {
   const card = document.getElementById('question-card');
   card.style.animation = 'none';
   requestAnimationFrame(() => { card.style.animation = 'cardIn .4s ease both'; });
+
+  // Move foco para a primeira opção após a transição
+  requestAnimationFrame(() => {
+    const firstOpt = list.querySelector('.opt');
+    if (firstOpt) firstOpt.focus();
+  });
 }
 
 function selectOption(btn, idx) {
@@ -833,18 +892,28 @@ function selectOption(btn, idx) {
 
   const q = state.missionQuestions[state.currentQ];
   const all = document.querySelectorAll('.opt');
-  all.forEach(b => b.disabled = true);
+
+  all.forEach(b => {
+    b.disabled = true;
+    b.setAttribute('aria-checked', b === btn ? 'true' : 'false');
+  });
 
   if (idx === q.a) {
     btn.classList.add('correct');
+    btn.setAttribute('aria-label', btn.getAttribute('aria-label') + ' — Correto!');
     state.score++;
     playCorrect();
   } else {
     btn.classList.add('wrong');
+    btn.setAttribute('aria-label', btn.getAttribute('aria-label') + ' — Incorreto');
     all[q.a].classList.add('correct');
+    all[q.a].setAttribute('aria-label', all[q.a].getAttribute('aria-label') + ' — Resposta correta');
     playWrong();
   }
-  document.getElementById('btn-next').classList.add('visible');
+
+  const nextBtn = document.getElementById('btn-next');
+  nextBtn.classList.add('visible');
+  requestAnimationFrame(() => nextBtn.focus());
 }
 
 document.getElementById('btn-next').onclick = () => {
@@ -858,11 +927,13 @@ document.getElementById('btn-next').onclick = () => {
 };
 
 document.getElementById('quiz-back').onclick = () => {
+  const backBtn = document.getElementById('quiz-back');
   openModal(
     '⚠️ Missão Abortada? ⚠️',
     '<p class="modal-confirm-text">"Desistir no meio do caminho é uma vergonha para seu clã." — Kakashi Hatake<br><br>Deseja realmente abandonar esta missão?</p>',
     `<button class="btn-res btn-res-danger" id="confirm-exit">💔 Abandonar</button>
-     <button class="btn-res btn-res-primary" onclick="closeModal()">⚡ Continuar</button>`
+     <button class="btn-res btn-res-primary" onclick="closeModal()">⚡ Continuar</button>`,
+    backBtn
   );
   document.getElementById('confirm-exit').onclick = () => {
     closeModal();
@@ -882,16 +953,16 @@ function finishMission() {
   const rankKey = getRankKey(score);
   const rankData = RANKS[rankKey];
   const md = getMissionData(m.id);
-  
+
   const missionMessages = {
-    'academia': `"${state.userName}, você deu o primeiro passo. Ainda há muito o que aprender." — Iruka-sensei`,
-    'genin': `"${state.userName}, agora você é oficialmente um Genin de Konoha!" — Terceiro Hokage`,
-    'chunin': `"${state.userName}, seu nome será lembrado entre os Chunins da Folha." — Tsunade-sama`,
-    'jounin': `"${state.userName}... você realmente evoluiu." — Kakashi`,
-    'anbu': `"${state.userName}, bem-vindo às sombras." — Danzō`,
-    'hokage': `"${state.userName}, você superou todas as expectativas." — Naruto Uzumaki`
+    'academia': `"${state.userName}, seu chakra ainda é bruto — mas a determinação é o que separa um ninja de um civl." — Iruka-sensei`,
+    'genin':    `"${state.userName}, a testa-fé agora é sua. Use-a com responsabilidade." — Terceiro Hokage`,
+    'chunin':   `"Você pensa mais rápido do que eu esperava, ${state.userName}. Continue assim e não precisará da minha supervisão." — Tsunade-sama`,
+    'jounin':   `"${state.userName}... você evoluiu. Kakashi diria algo inspirador agora — eu prefiro dizer: não decepcione." — Yamato`,
+    'anbu':     `Seu nome não será registrado. Seu rosto não será lembrado. Apenas seus resultados importam. Bem-vindo às sombras, ${state.userName}.`,
+    'hokage':   `"${state.userName} provou o que precisava ser provado. A Vila da Folha tem um guardião à altura." — Pergaminho do Conselho`,
   };
-  
+
   const customMsg = missionMessages[state.currentMission.id] || rankData.phrase;
   document.getElementById('result-phrase').innerHTML = customMsg;
   document.getElementById('result-rank-badge').textContent = rankData.badge;
@@ -928,17 +999,23 @@ function showRankUnlock(rankKey) {
   const lt = document.getElementById('level-transition');
   document.getElementById('lt-rank-badge').textContent = r.badge;
   document.getElementById('lt-name').textContent = r.rank;
-  
+
   const epicMessages = {
-    'genin': 'O primeiro passo rumo à lenda. A Vila reconhece seu esforço!',
-    'chunin': 'Você agora lidera esquadrões. Use sua sabedoria para proteger seus companheiros.',
-    'jounin': 'Poucos chegam tão longe. Seu nome será lembrado nas crônicas da Vila.',
-    'anbu': 'Você opera nas sombras. Segure este segredo com sua vida.',
-    'hokage': 'A VOLTA DO LENDÁRIO! A Vila da Folha tem um novo protetor!'
+    'genin':   'Seu nome foi registrado nos pergaminhos da Vila. O primeiro passo de muitos.',
+    'chunin':  'O Conselho reconheceu seu julgamento em campo. Você lidera agora.',
+    'jounin':  'Apenas os mais experientes chegam aqui. Seu chakra foi forjado em batalha.',
+    'anbu':    'Sua máscara foi entregue. Sua identidade, apagada. Sirva a Vila nas sombras.',
+    'hokage':  'O Chapéu Kage é pesado. Você provou que pode carregá-lo.'
   };
-  
+
   document.getElementById('lt-sub').textContent = epicMessages[rankKey] || 'Nova patente conquistada.';
   lt.classList.add('show');
+
+  requestAnimationFrame(() => {
+    const continueBtn = document.getElementById('lt-continue');
+    if (continueBtn) continueBtn.focus();
+  });
+
   playStampSound();
 }
 
@@ -947,14 +1024,11 @@ function playStampSound() {
     const ac = new (window.AudioContext || window.webkitAudioContext)();
     const o = ac.createOscillator();
     const g = ac.createGain();
-    o.connect(g);
-    g.connect(ac.destination);
-    o.type = 'sine';
-    o.frequency.value = 440;
+    o.connect(g); g.connect(ac.destination);
+    o.type = 'sine'; o.frequency.value = 440;
     g.gain.setValueAtTime(0.15, ac.currentTime);
     g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.3);
-    o.start();
-    o.stop(ac.currentTime + 0.2);
+    o.start(); o.stop(ac.currentTime + 0.2);
   } catch {}
 }
 
@@ -1010,19 +1084,21 @@ function openShareCard() {
   document.getElementById('share-card-wrap').innerHTML = cardHTML;
   document.getElementById('share-overlay').classList.add('open');
 
+  requestAnimationFrame(() => {
+    document.getElementById('btn-copy-share').focus();
+  });
+
   document.getElementById('btn-copy-share').onclick = () => {
-    const text = `🍃 PERGAMINHO NINJA — VILA DA FOLHA 🍃\n\n` +
+    const text = `PERGAMINHO NINJA — VILA DA FOLHA\n\n` +
       `「 ${state.userName} 」\n` +
       `📜 Missão: ${m.title}\n` +
       `🏆 Patente Ninja: ${r.rank} ${r.badge}\n` +
       `🌀 Domínio: ${score}/10 técnicas (${pct}%)\n\n` +
       `"${getMissionQuote(m.id)}"\n\n` +
-      `🎮 Desafie seu amigo! Será que ele consegue superar sua patente?\n\n` +
-      `— Compartilhado via Pergaminho Ninja —`;
-    
+      `🎮 Desafie seu amigo! Será que ele consegue superar sua patente?\n\n`;
     const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
     window.open(whatsappUrl, '_blank');
-    showToast('📱 Abrindo WhatsApp...', 'info', 2000);
+    showToast('Abrindo WhatsApp...', 'info', 2000);
   };
 }
 
@@ -1034,7 +1110,7 @@ document.getElementById('share-overlay').onclick = e => {
 };
 
 /* ═══════════════════════════════════════════════════════════════
-   EVENT LISTENERS - AVATAR MENU
+   EVENT LISTENERS — AVATAR MENU
 ═══════════════════════════════════════════════════════════════ */
 document.getElementById('avatar-btn').onclick = (e) => {
   e.stopPropagation();
@@ -1046,11 +1122,11 @@ document.querySelectorAll('.dropdown-item').forEach(item => {
     e.stopPropagation();
     const action = item.dataset.action;
     switch(action) {
-      case 'profile': showProfile(); break;
-      case 'dashboard': showDashboard(); break;
-      case 'ranking': showRankingGlobal(); break;
-      case 'settings': showSettings(); break;
-      case 'logout': logoutUser(); break;
+      case 'profile':   showProfile();       break;
+      case 'dashboard': showDashboard();     break;
+      case 'ranking':   showRankingGlobal(); break;
+      case 'settings':  showSettings();      break;
+      case 'logout':    logoutUser();        break;
     }
   });
 });
@@ -1059,20 +1135,26 @@ document.addEventListener('click', (e) => {
   const container = document.getElementById('avatar-menu-container');
   const dropdown = document.getElementById('dropdown-menu');
   if (container && dropdown && !container.contains(e.target)) {
-    dropdown.classList.remove('open');
+    closeDropdown();
   }
 });
 
 /* ═══════════════════════════════════════════════════════════════
-   KEYBOARD NAVIGATION
+   KEYBOARD NAVIGATION GLOBAL
 ═══════════════════════════════════════════════════════════════ */
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
     const dropdown = document.getElementById('dropdown-menu');
-    if (dropdown) dropdown.classList.remove('open');
+    if (dropdown && dropdown.classList.contains('open')) {
+      closeDropdown();
+      document.getElementById('avatar-btn').focus();
+      return;
+    }
     const modal = document.getElementById('modal-overlay');
-    if (modal && modal.classList.contains('open')) closeModal();
+    if (modal && modal.classList.contains('open')) { closeModal(); return; }
     const share = document.getElementById('share-overlay');
     if (share && share.classList.contains('open')) share.classList.remove('open');
+    const lt = document.getElementById('level-transition');
+    if (lt && lt.classList.contains('show')) lt.classList.remove('show');
   }
 });
