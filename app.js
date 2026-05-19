@@ -249,7 +249,7 @@ function getUnlockedBadges() {
   let done = 0, hasPerfect = false, hasHokage = false, hasAnbu = false, allMaster = true;
   let totalAttempts = 0;
   let totalCorrect = 0;
-
+  
   MISSIONS.forEach(m => {
     const d = s[m.id];
     if (!d || d.attempts === 0) { allMaster = false; return; }
@@ -266,7 +266,6 @@ function getUnlockedBadges() {
   if (done >= 1) unlocked.add('first_mission');
   if (done >= 6) unlocked.add('all_missions');
   if (hasPerfect) unlocked.add('perfect');
-  if (hasHokage) unlocked.add('hokage_rank');
   if (hasAnbu) unlocked.add('anbu_ops');
   if (allMaster && done === 6) unlocked.add('master');
 
@@ -278,12 +277,28 @@ function getUnlockedBadges() {
   if (['chunin', 'jounin', 'anbu', 'hokage'].includes(highestRank)) 
     unlocked.add('chunin_elite');
   if (['jounin', 'anbu', 'hokage'].includes(highestRank)) 
-    unlocked.add('jounin_elite');  // ← NOVO: Jounin
+    unlocked.add('jounin_elite');  
   if (['anbu', 'hokage'].includes(highestRank)) 
     unlocked.add('anbu_unlocked');
   if (highestRank === 'hokage') 
     unlocked.add('hokage_reached');
     
+  // Badge: Construtor de Lendas (todas as missões com rank Chunin ou superior)
+    let allChuninOrBetter = true;
+    MISSIONS.forEach(m => {
+      const d = s[m.id];
+      if (d && d.bestScore !== null) {
+        const rankKey = getRankKey(d.bestScore, 10);
+        if (!['chunin', 'jounin', 'anbu', 'hokage'].includes(rankKey)) {
+          allChuninOrBetter = false;
+        }
+      } else {
+        allChuninOrBetter = false; 
+      }
+    });
+    if (allChuninOrBetter && done === 6) unlocked.add('legacy_builder');
+
+
   if (totalAttempts >= 10) unlocked.add('ten_attempts');
   if (totalCorrect >= 100) unlocked.add('rasengan_master');
 
@@ -796,8 +811,8 @@ function renderProfile() {
   { id: 'anbu_unlocked',   icon: '👺', label: 'Máscara ANBU',        desc: 'Entre para as forças especiais ANBU' },
   { id: 'anbu_ops',        icon: '🗡️', label: 'Operação Tática',     desc: 'Conclua a Missão 5 com rank ANBU' },
   { id: 'hokage_reached',  icon: '🔥', label: 'Sombra do Fogo',      desc: 'Realize o sonho e alcance o rank Hokage' },
-  { id: 'hokage_rank',     icon: '👑', label: 'Hokage Supremo',      desc: 'Conquiste o Rank Hokage em qualquer missão' },
-
+  { id: 'legacy_builder', icon: '🏛️', label: 'Construtor de Lendas', desc: 'Complete todas as missões com pelo menos rank Chunin' },
+  
   // --- Estatísticas / Grind ---
   { id: 'ten_attempts',    icon: '⚡', label: 'Determinação de Aço', desc: 'Não desista! Realize 10 tentativas' },
   { id: 'rasengan_master', icon: '🌀', label: 'Esfera Espiral',      desc: 'Domine o chakra acumulando 100 acertos' },
