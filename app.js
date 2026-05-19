@@ -7,26 +7,10 @@ const RANKS = {
   academia:{ rank:'Aluno da Academia', icon:'', badge:'📜', phrase:'Seu chakra acabou de despertar. O caminho é longo, mas começa aqui.' },
   genin:   { rank:'Genin',            icon:'', badge:'🎭', phrase:'Você está apto para missões de baixo risco. Siga seu sensei.' },
   chunin:  { rank:'Chunin',           icon:'', badge:'⚔️', phrase:'Seu julgamento em campo foi reconhecido pelo Conselho.' },
-  jounin:  { rank:'Jounin',           icon:'', badge:'🟢', phrase:'Poucos chegam aqui. Sua maestria é inegável.' },
+  jounin:  { rank:'Jounin',           icon:'', badge:'🛡️', phrase:'Poucos chegam aqui. Sua maestria é inegável.' },
   anbu:    { rank:'ANBU',             icon:'', badge:'🎴', phrase:'Você opera onde a luz não alcança. Não revele sua identidade.' },
   hokage:  { rank:'Hokage',           icon:'', badge:'👑', phrase:'A Vila da Folha tem um novo guardião. Que seu nome perdure.' },
 };
-
-const BADGES_DEF = [
-  { id:'first_mission', icon:'🎌', label:'Primeira Missão', desc:'Complete qualquer missão' },
-  { id:'all_missions',  icon:'📜', label:'Pergaminho Completo', desc:'Complete as 6 missões' },
-  { id:'perfect',       icon:'⭐', label:'Pontuação Perfeita', desc:'Faça 10/10 em qualquer missão' },
-  { id:'hokage_rank',   icon:'👑', label:'Hokage Supremo', desc:'Obtenha rank Hokage' },
-  { id:'anbu_ops',      icon:'🎭', label:'Operativo ANBU', desc:'Conquiste Rank ANBU na Missão 5' },
-  { id:'master',        icon:'🌀', label:'Sábio dos Seis Caminhos', desc:'Domine todas as missões' },
-  { id:'genin_promo',   icon:'🥷', label:'Genin Promovido', desc:'Alcance o rank Genin' },
-  { id:'chunin_elite',  icon:'⚔️', label:'Chunin Elite', desc:'Alcance o rank Chunin' },
-  { id:'anbu_unlocked', icon:'🎴', label:'Máscara ANBU', desc:'Desloqueie o rank ANBU' },
-  { id:'hokage_reached',icon:'👑', label:'Vontade de Fogo', desc:'Alcance o rank Hokage' },
-  { id:'ten_attempts',  icon:'🔟', label:'10 Tentativas', desc:'Realize 10 tentativas em missões' },
-  { id:'rasengan_master',icon:'🌀', label:'Mestre do Rasengan', desc:'Acumule 100 acertos' },
-];
-
 
 const MISSIONS = [
   { id:'academia', num:1, name:'Academia Ninja', title:'Academia Ninja',   desc:'Primeiros passos.', icon:'忍', color:'#4A90D9', questions:[0,1,2,3,4,5,6,7,8,9] },
@@ -176,7 +160,7 @@ function saveMissionResult(id, score) {
   const s = loadStorage();
   if (!s[id]) s[id] = { history: [], bestScore: null, attempts: 0 };
   const dateStr = new Date().toLocaleDateString('pt-BR');
-  const rankKey = getRankKey(score);
+  const rankKey = getRankKey(score, 10);
   s[id].history.unshift({ date: dateStr, score, rank: RANKS[rankKey].rank });
   if (s[id].history.length > 8) s[id].history = s[id].history.slice(0, 8);
   if (s[id].bestScore === null || score > s[id].bestScore) s[id].bestScore = score;
@@ -188,10 +172,6 @@ function saveUserName(name) {
   const s = loadStorage();
   s.userName = name;
   saveStorage(s);
-}
-
-function getSavedName() {
-  try { return loadStorage().userName || ''; } catch { return ''; }
 }
 
 function getTotalCorrectAnswers() {
@@ -207,14 +187,14 @@ function getTotalCorrectAnswers() {
 }
 
 
-function getRankKey(score) {
-  const p = score / 10;
-  if (p <= 0.20) return 'academia';
-  if (p <= 0.40) return 'genin';
-  if (p <= 0.60) return 'chunin';
-  if (p <= 0.75) return 'jounin';
-  if (p <= 0.87) return 'anbu';
-  return 'hokage';
+function getRankKey(acertos, total) {
+  const pct = acertos / total;
+  if (pct < 0.40) return 'academia';
+  if (pct < 0.55) return 'genin';
+  if (pct < 0.70) return 'chunin';
+  if (pct < 0.83) return 'jounin';
+  if (pct < 0.95) return 'anbu';
+  return 'hokage'; // 95%+
 }
 
 function isMissionUnlocked(missionIndex) {
@@ -249,18 +229,18 @@ function getOverallRankKey() {
     if (d && d.bestScore !== null) { total += d.bestScore; max += 10; }
   });
   if (max === 0) return 'academia';
-  return getRankKey(Math.round((total / max) * 10));
+  return getRankKey(total, max);
 }
 
 function getHighestRankKey() {
   const s = loadStorage();
-  let bestScoreSum = 0;
+  let total = 0, completed = 0;
   MISSIONS.forEach(m => {
     const d = s[m.id];
-    if (d && d.bestScore !== null) bestScoreSum += d.bestScore;
+    if (d && d.bestScore !== null) { total += d.bestScore; completed++; }
   });
-  const avgScore = (bestScoreSum / MISSIONS.length) || 0;
-  return getRankKey(avgScore);
+  if (completed === 0) return 'academia';
+  return getRankKey(total, completed * 10);
 }
 
 function getUnlockedBadges() {
@@ -276,7 +256,7 @@ function getUnlockedBadges() {
     done++;
     totalAttempts += d.attempts;
     if (d.bestScore === 10) hasPerfect = true;
-    const rk = getRankKey(d.bestScore || 0);
+    const rk = getRankKey(d.bestScore || 0, 10);
     if (rk === 'hokage') hasHokage = true;
     if ((rk === 'anbu' || rk === 'hokage') && m.id === 'anbu') hasAnbu = true;
     if (d.bestScore !== 10) allMaster = false;
@@ -291,16 +271,24 @@ function getUnlockedBadges() {
   if (allMaster && done === 6) unlocked.add('master');
 
   const highestRank = getHighestRankKey();
-  if (['genin','chunin','jounin','anbu','hokage'].includes(highestRank)) unlocked.add('genin_promo');
-  if (['chunin','jounin','anbu','hokage'].includes(highestRank)) unlocked.add('chunin_elite');
-  if (['anbu','hokage'].includes(highestRank)) unlocked.add('anbu_unlocked');
-  if (highestRank === 'hokage') unlocked.add('hokage_reached');
+  
+  // Badges de progressão de rank (baseado na média geral)
+  if (['genin', 'chunin', 'jounin', 'anbu', 'hokage'].includes(highestRank)) 
+    unlocked.add('genin_promo');
+  if (['chunin', 'jounin', 'anbu', 'hokage'].includes(highestRank)) 
+    unlocked.add('chunin_elite');
+  if (['jounin', 'anbu', 'hokage'].includes(highestRank)) 
+    unlocked.add('jounin_elite');  // ← NOVO: Jounin
+  if (['anbu', 'hokage'].includes(highestRank)) 
+    unlocked.add('anbu_unlocked');
+  if (highestRank === 'hokage') 
+    unlocked.add('hokage_reached');
+    
   if (totalAttempts >= 10) unlocked.add('ten_attempts');
   if (totalCorrect >= 100) unlocked.add('rasengan_master');
 
   return unlocked;
 }
-
 function shuffleOptions(question) {
   const indices = [0, 1, 2, 3];
   for (let i = indices.length - 1; i > 0; i--) {
@@ -795,19 +783,25 @@ function renderProfile() {
   document.getElementById('profile-progress-fill').style.width = `${progressPct}%`;
 
   const allBadges = [
-    { id:'first_mission',  icon:'🎌', label:'Primeira Missão',    desc:'Complete qualquer missão' },
-    { id:'all_missions',   icon:'📜', label:'Todas as Missões',   desc:'Complete as 6 missões' },
-    { id:'perfect',        icon:'⭐', label:'Nota Perfeita',      desc:'10/10 em qualquer missão' },
-    { id:'hokage_rank',    icon:'👑', label:'Hokage Supremo',     desc:'Rank Hokage em qualquer missão' },
-    { id:'anbu_ops',       icon:'🎴', label:'Operativo ANBU',     desc:'Rank ANBU na Missão 5' },
-    { id:'master',         icon:'🌀', label:'Mestre Ninja',       desc:'Domine todas as missões' },
-    { id:'genin_promo',    icon:'🎭', label:'Genin Promovido',    desc:'Alcance o rank Genin' },
-    { id:'chunin_elite',   icon:'⚔️', label:'Chunin Elite',       desc:'Alcance o rank Chunin' },
-    { id:'anbu_unlocked',  icon:'🎴', label:'ANBU Desbloqueado',  desc:'Alcance o rank ANBU' },
-    { id:'hokage_reached', icon:'👑', label:'Hokage Alcançado',   desc:'Alcance o rank Hokage' },
-    { id:'ten_attempts',   icon:'🔟', label:'10 Tentativas',      desc:'Realize 10 tentativas' },
-    { id:'rasengan_master',icon:'🌀', label:'Mestre do Rasengan', desc:'Acumule 100 acertos' },
-  ];
+  // --- Progressão de Missões ---
+  { id: 'first_mission',   icon: '🥷', label: 'Primeiro Selo',    desc: 'Complete qualquer missão com sucesso' },
+  { id: 'all_missions',    icon: '📜', label: 'Pergaminho Lendário', desc: 'Complete todos os 6 pergaminhos' },
+  { id: 'perfect',         icon: '🎯', label: 'Kami no Teki',      desc: 'Alcance 10/10 em qualquer missão' },
+  { id: 'master',          icon: '🌀', label: 'Mestre da Vila',      desc: 'Domine perfeitamente todas as missões' },
+
+  // --- Ranks Ninja (Progressão de Carreira) ---
+  { id: 'genin_promo',     icon: '🍃', label: 'Graduação Genin',     desc: 'Deixe a academia e alcance o rank Genin' },
+  { id: 'chunin_elite',    icon: '⚔️', label: 'Chunin da Elite',     desc: 'Passe no exame e alcance o rank Chunin' },
+  { id: 'jounin_elite',    icon: '🛡️', label: 'Jonin Especial',      desc: 'Alcance o rank Jonin, a elite ninja' },
+  { id: 'anbu_unlocked',   icon: '👺', label: 'Máscara ANBU',        desc: 'Entre para as forças especiais ANBU' },
+  { id: 'anbu_ops',        icon: '🗡️', label: 'Operação Tática',     desc: 'Conclua a Missão 5 com rank ANBU' },
+  { id: 'hokage_reached',  icon: '🔥', label: 'Sombra do Fogo',      desc: 'Realize o sonho e alcance o rank Hokage' },
+  { id: 'hokage_rank',     icon: '👑', label: 'Hokage Supremo',      desc: 'Conquiste o Rank Hokage em qualquer missão' },
+
+  // --- Estatísticas / Grind ---
+  { id: 'ten_attempts',    icon: '⚡', label: 'Determinação de Aço', desc: 'Não desista! Realize 10 tentativas' },
+  { id: 'rasengan_master', icon: '🌀', label: 'Esfera Espiral',      desc: 'Domine o chakra acumulando 100 acertos' },
+];
 
   const badgesHTML = allBadges.map(b => `
     <div class="profile-badge ${badges.has(b.id) ? 'unlocked' : 'locked'}" role="listitem" aria-label="${b.label}: ${badges.has(b.id) ? 'desbloqueado' : 'bloqueado'}">
@@ -950,7 +944,7 @@ function finishMission() {
   const score = state.score;
   saveMissionResult(m.id, score);
 
-  const rankKey = getRankKey(score);
+  const rankKey = getRankKey(score, 10);
   const rankData = RANKS[rankKey];
   const md = getMissionData(m.id);
 
@@ -1064,7 +1058,7 @@ document.getElementById('btn-share').onclick = () => {
 function openShareCard() {
   const m = state.currentMission;
   const score = state.score;
-  const rankKey = getRankKey(score);
+  const rankKey = getRankKey(score, 10);
   const r = RANKS[rankKey];
   const pct = Math.round((score / 10) * 100);
 
