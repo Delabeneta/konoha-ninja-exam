@@ -5,11 +5,11 @@ const RANK_ORDER = ['academia','genin','chunin','jounin','anbu','hokage'];
 
 const RANKS = {
   academia:{ rank:'Aluno da Academia', icon:'', badge:'📜', phrase:'Seu chakra acabou de despertar. O caminho é longo, mas começa aqui.' },
-  genin:   { rank:'Genin',            icon:'', badge:'🎭', phrase:'Você está apto para missões de baixo risco. Siga seu sensei.' },
-  chunin:  { rank:'Chunin',           icon:'', badge:'⚔️', phrase:'Seu julgamento em campo foi reconhecido pelo Conselho.' },
-  jounin:  { rank:'Jounin',           icon:'', badge:'🛡️', phrase:'Poucos chegam aqui. Sua maestria é inegável.' },
-  anbu:    { rank:'ANBU',             icon:'', badge:'🎴', phrase:'Você opera onde a luz não alcança. Não revele sua identidade.' },
-  hokage:  { rank:'Hokage',           icon:'', badge:'👑', phrase:'A Vila da Folha tem um novo guardião. Que seu nome perdure.' },
+  genin:   { rank:'Genin',             icon:'', badge:'🥷', phrase:'Você está apto para missões de baixo risco. Siga seu sensei.' },
+  chunin:  { rank:'Chunin',            icon:'', badge:'⚔️', phrase:'Seu julgamento em campo foi reconhecido pelo Conselho.' },
+  jounin:  { rank:'Jounin',            icon:'', badge:'🛡️', phrase:'Poucos chegam aqui. Sua maestria é inegável.' },
+  anbu:    { rank:'ANBU',              icon:'', badge:'🎴', phrase:'Você opera onde a luz não alcança. Não revele sua identidade.' },
+  hokage:  { rank:'Hokage',            icon:'', badge:'👑', phrase:'A Vila da Folha tem um novo guardião. Que seu nome perdure.' },
 };
 
 const MISSIONS = [
@@ -64,7 +64,7 @@ const QUESTIONS_JOUNIN = [
   {q:"Ordem correta dos primeiros Hokages?",o:["Hashirama,Tobirama,Hiruzen,Minato,Tsunade","Tobirama,Hashirama,Hiruzen,Minato,Tsunade","Hiruzen,Hashirama,Tobirama,Minato,Tsunade","Minato,Hashirama,Tobirama,Hiruzen,Tsunade"],a:0},
   {q:"Qual parte da Kurama Minato selou em Naruto?",o:["Chakra Yang","Chakra Yin","Kurama completa","Apenas selo residual"],a:0},
   {q:"O que o Rinnegan permite ao usuário?",o:["Seis Caminhos","Copiar jutsus","Ver chakra","Prever ataques"],a:0},
-  {q:"Por que Kakashi é chamado de Ninja Copiador?",o:["Copiou mais de mil jutsus","Criou mil jutsus","Roubou técnicas","É discípulo de Minato"],a:0},
+  {q:"Por que Kakashi é chamado de Ninja Copiador?",o:["Copiou mais de mil jutsus","Criou mil jutsus","Copiou técnicas do Minato","Cópiou o discípulo de Minato"],a:0},
   {q:"Técnica de vento criada por Naruto?",o:["Rasenshuriken","Rasengan Supremo","Vento Cortante","Bijuu Ball"],a:0},
   {q:"Qual foi o papel de Danzo no massacre Uchiha?",o:["Ordenou","Protegeu","Foi contra","Ignorou"],a:0},
   {q:"Relação entre Nagato, Yahiko e Konan?",o:["Fundaram a Akatsuki","Eram irmãos","Rivais","Senseis"],a:0},
@@ -193,8 +193,8 @@ function getRankKey(acertos, total) {
   if (pct < 0.55) return 'genin';
   if (pct < 0.70) return 'chunin';
   if (pct < 0.83) return 'jounin';
-  if (pct < 0.95) return 'anbu';
-  return 'hokage'; // 95%+
+  if (pct < 0.94) return 'anbu';
+  return 'hokage'; // 94%+
 }
 
 function isMissionUnlocked(missionIndex) {
